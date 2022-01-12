@@ -7,4 +7,6 @@ RUN apt install python3 -y
 RUN apt install python3-pip -y
 COPY requirements.txt ./app/requirements.txt
 RUN pip3 install -r ./app/requirements.txt 
-CMD [ "tail","-f","/dev/null"]   
+WORKDIR /app
+EXPOSE 8000
+CMD [ "uvicorn","main:app","--reload","--host","0.0.0.0"]   
