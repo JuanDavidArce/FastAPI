@@ -11,6 +11,7 @@ from pydantic import Field
 # FastAPI
 from fastapi import Query,Body,Path
 from fastapi import FastAPI
+from pydantic.schema import schema
 
 app = FastAPI()
 
@@ -44,6 +45,17 @@ class Person(BaseModel):
     hair_color:Optional[HairColor]=Field(default=None)
     is_married: Optional[bool]= Field(default=None)
 
+    class Config:
+        schema_extra = {
+            "example":
+            {
+                "first_name":"Facundo",
+                "last_name": "Garcia Martoni",
+                "age":21,
+                "hair_color":"blonde",
+                "is_married":False
+            }
+        }
 
 class Location(BaseModel):
     city:str
