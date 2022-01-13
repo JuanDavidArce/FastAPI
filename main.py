@@ -7,9 +7,8 @@ from pydantic import BaseModel
 
 
 # FastAPI
-from fastapi import Query
+from fastapi import Query,Body,Path
 from fastapi import FastAPI
-from fastapi import Body
 
 app = FastAPI()
 
@@ -38,7 +37,30 @@ def create_person(person:Person=Body(...)):
 
 @app.get("/person/detail")
 def show_person(
-    name:Optional[str]=Query(None,min_length=1,max_length=50,regex="^([A-Z][a-z]+)([\s][A-Z][a-z]+)([\s][A-Z][a-z]+)?([\s][A-Z][a-z]+)?$"),
-    age:Optional[str]=Query(...)
+    name:Optional[str]=Query(
+        None,min_length=1,
+        max_length=50,
+        regex="^([A-Z][a-z]+)([\s][A-Z][a-z]+)([\s][A-Z][a-z]+)?([\s][A-Z][a-z]+)?$",
+        title="Person Name",
+        description="This is the person name. It's between 1 and 50 characters"
+        ),
+    age:Optional[str]=Query(
+        ...,
+        title="Person Age",
+        description="This is the person age. It's required"
+        )
 ):
     return {name:age}
+
+
+# Validations : Path Parameters
+
+
+@app.get("/person/detail/{person_id}")
+def show_person(
+    person_id:int= Path(
+        ...,
+        gt=0,
+        )
+):
+    return {person_id:"It exists"}
