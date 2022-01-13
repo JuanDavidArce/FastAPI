@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 
 # FastAPI
+from fastapi import Query
 from fastapi import FastAPI
 from fastapi import Body
 
@@ -32,3 +33,12 @@ def home():
 def create_person(person:Person=Body(...)):
     return person
 
+
+# Validations: Query Parameters
+
+@app.get("/person/detail")
+def show_person(
+    name:Optional[str]=Query(None,min_length=1,max_length=50,regex="^([A-Z][a-z]+)([\s][A-Z][a-z]+)([\s][A-Z][a-z]+)?([\s][A-Z][a-z]+)?$"),
+    age:Optional[str]=Query(...)
+):
+    return {name:age}
