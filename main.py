@@ -13,12 +13,16 @@ from fastapi import Query,Body,Path
 from fastapi import FastAPI
 from pydantic.schema import schema
 from fastapi import status
+from fastapi import Form
 
 app = FastAPI()
 
 
 # Models
 
+class LoginOut(BaseModel):
+    username :str = Field(...,max_length=20,example="miguelsf")
+    message: str = Field(default="Login Succesfully!")
 
 class HairColor(Enum):
     white = "white"
@@ -147,3 +151,12 @@ def update_person(
     restults = person.dict()
     restults.update(location.dict())
     return restults
+
+
+@app.post(
+    path="/login",
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK
+)
+def login(username:str = Form(...),password:str = Form(...)):
+    return LoginOut(username=username)
