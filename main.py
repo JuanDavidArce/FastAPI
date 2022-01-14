@@ -18,6 +18,7 @@ app = FastAPI()
 
 # Models
 
+
 class HairColor(Enum):
     white = "white"
     brown = "brown"
@@ -26,70 +27,37 @@ class HairColor(Enum):
     red = "red"
 
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name:str = Field(
         ...,
         min_length=1,
         max_length=50,
+        example="Facundo"
         )
     last_name:str= Field(
         ...,
         min_length=1,
         max_length=50,
+        example="Garcia"
+
         )
     age :int= Field(
         ...,
         gt=0,
         le=115,
+        example=15
     )
-    hair_color:Optional[HairColor]=Field(default=None)
-    is_married: Optional[bool]= Field(default=None)
+    hair_color:Optional[HairColor]=Field(default=None,example="white")
+    is_married: Optional[bool]= Field(default=None,example=False)
+
+class Person(PersonBase):
     password:str = Field(...,min_length=8)
 
-    class Config:
-        schema_extra = {
-            "example":
-            {
-                "first_name":"Facundo",
-                "last_name": "Garcia Martoni",
-                "age":21,
-                "hair_color":"blonde",
-                "is_married":False,
-                "password":"example"
-            }
-        }
 
 
-class PersonOut(BaseModel):
-    first_name:str = Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        )
-    last_name:str= Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        )
-    age :int= Field(
-        ...,
-        gt=0,
-        le=115,
-    )
-    hair_color:Optional[HairColor]=Field(default=None)
-    is_married: Optional[bool]= Field(default=None)
+class PersonOut(PersonBase):
+    pass
 
-    class Config:
-        schema_extra = {
-            "example":
-            {
-                "first_name":"Facundo",
-                "last_name": "Garcia Martoni",
-                "age":21,
-                "hair_color":"blonde",
-                "is_married":False,
-            }
-        }
 
 
 class Location(BaseModel):
