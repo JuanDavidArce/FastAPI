@@ -13,9 +13,9 @@ from pydantic import EmailStr
 from fastapi import UploadFile,File
 from fastapi import Query,Body,Path,Header,Cookie
 from fastapi import FastAPI
-from pydantic.schema import schema
 from fastapi import status
 from fastapi import Form
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -117,6 +117,7 @@ def show_person(
 
 
 # Validations : Path Parameters
+persons = [1,2,3,4,5]
 
 
 @app.get(
@@ -130,6 +131,11 @@ def show_person(
         example=123,
         )
 ):
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This person doesn't exist!!"
+        )
     return {person_id:"It exists"}
 
 # Validations : Request Body
@@ -204,3 +210,4 @@ def post_image(
         "Format":image.content_type,
         "Size(kb)":len(image.file.read())
     }
+
