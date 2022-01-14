@@ -6,10 +6,11 @@ from enum import Enum
 # Pydantic
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import EmailStr
 
 
 # FastAPI
-from fastapi import Query,Body,Path
+from fastapi import Query,Body,Path,Header,Cookie
 from fastapi import FastAPI
 from pydantic.schema import schema
 from fastapi import status
@@ -23,6 +24,7 @@ app = FastAPI()
 class LoginOut(BaseModel):
     username :str = Field(...,max_length=20,example="miguelsf")
     message: str = Field(default="Login Succesfully!")
+
 
 class HairColor(Enum):
     white = "white"
@@ -153,6 +155,7 @@ def update_person(
     return restults
 
 
+# Forms
 @app.post(
     path="/login",
     response_model=LoginOut,
@@ -160,3 +163,32 @@ def update_person(
 )
 def login(username:str = Form(...),password:str = Form(...)):
     return LoginOut(username=username)
+
+
+# Cookies and  Headers Parameters
+@app.post(
+    path="/contact",
+    status_code=status.HTTP_200_OK
+)
+def contact(
+    first_name:str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    last_name:str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    email: EmailStr= Form(...),
+    message:str = Form(
+        ...,
+        min_length=20
+   ),
+   user_agent:Optional[str]= Header(default=None),
+   ads:Optional[str]= Cookie(default=None)
+
+
+):
+    return user_agent
